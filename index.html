@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es-AR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#183d30"><title>Turnos | Il Gio Coffee & Barbería</title><link rel="stylesheet" href="/styles.css"></head>
+<body>
+<header><a class="brand" href="#"><span class="mark">IG</span><span><b>IL GIO</b><small>COFFEE & BARBERÍA</small></span></a><a href="#reservar">Reservar turno ↗</a></header>
+<main><section class="hero"><div class="eyebrow">DOS LOCALES · UNA EXPERIENCIA</div><h1>Tu próximo corte,<br><em>a tu manera.</em></h1><p>Elegí tu local, tu barbero y el horario que mejor te quede. Reservá online en pocos pasos.</p><a class="btn" href="#reservar">Reservar mi turno →</a><div class="note">✦ Atención personalizada · Turnos de 30 minutos</div></section>
+<section class="booking" id="reservar"><div class="eyebrow">RESERVAS ONLINE</div><h2>Encontrá tu horario</h2>
+<form id="bookingForm">
+<label for="location">1. Elegí el local</label><select id="location" required><option value="">Seleccionar sucursal</option><option value="boedo">Boedo · Av. Independencia 3579</option><option value="matheu">Parque Patricios · Matheu 1732</option></select>
+<label>2. Servicio</label><div class="services"><label class="service"><input type="radio" name="service" value="Corte" data-price="18000" checked><b>Corte</b><strong>$18.000</strong><small>30 minutos</small></label><label class="service"><input type="radio" name="service" value="Corte y barba" data-price="22000"><b>Corte y barba</b><strong>$22.000</strong><small>30 minutos</small></label><label class="service"><input type="radio" name="service" value="Barba" data-price="14000"><b>Barba</b><strong>$14.000</strong><small>30 minutos</small></label></div>
+<label for="barber">3. Elegí tu barbero</label><select id="barber" required disabled><option>Primero elegí un local</option></select>
+<label for="date">4. Día</label><input id="date" type="date" required>
+<div class="labelrow"><label>5. Horarios disponibles</label><span id="hint">Elegí local, barbero y día</span></div><div id="slots" class="slots"><div class="empty">Los horarios aparecerán acá.</div></div>
+<input type="hidden" id="selectedTime">
+<label for="name">Tu nombre</label><input id="name" maxlength="80" autocomplete="name" placeholder="Nombre y apellido" required>
+<label for="phone">WhatsApp</label><input id="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="Tu número de contacto" required>
+<div class="summary"><span>Servicio seleccionado</span><b id="summary">Corte · $18.000 · 30 min</b></div><button class="btn submit" id="submit" type="submit">Confirmar reserva →</button><p class="fine">La reserva se confirma cuando el sistema la registra correctamente.</p><div id="message" role="status"></div>
+</form></section>
+<section class="locations"><div class="eyebrow">TE ESPERAMOS</div><h2>Elegí tu Il Gio</h2><div class="cards"><article><small>01 / BOEDO</small><h3>Independencia</h3><p>Av. Independencia 3579<br>Boedo, CABA</p><div class="team">Lautaro <span>09:00–14:00</span></div><div class="team">Julieta <span>14:00–20:00</span></div></article><article><small>02 / PARQUE PATRICIOS</small><h3>Matheu</h3><p>Matheu 1732<br>Parque Patricios, CABA</p><div class="team">Brai <span>09:00–20:00</span></div><div class="team">Thiago <span>11:00–20:00</span></div></article></div></section></main>
+<footer><a class="brand" href="#"><span class="mark">IG</span><span><b>IL GIO</b><small>COFFEE & BARBERÍA</small></span></a><span>Estilo, café y buena atención.</span></footer><script src="/app.js"></script></body></html>
