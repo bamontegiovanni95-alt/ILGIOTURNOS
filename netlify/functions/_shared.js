@@ -1,6 +1,6 @@
 const STAFF = {
-  boedo: { lautaro: [9, 14], julieta: [14, 20] },
-  matheu: { brai: [9, 20], thiago: [11, 20] }
+  boedo: { lautaro: [9, 14], julieta: [14, 20], brai: [9, 20] },
+  matheu: { thiago: [11, 20] }
 };
 const SERVICES = { "Corte": 18000, "Corte y barba": 22000, "Barba": 14000 };
 
