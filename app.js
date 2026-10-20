@@ -3,7 +3,7 @@ const staff={boedo:[{id:"lautaro",name:"Lautaro",start:9,end:14},{id:"julieta",n
 const loc=$("location"),barber=$("barber"),date=$("date"),slots=$("slots"),time=$("selectedTime"),msg=$("message");let chosen="";
 const now=new Date();date.min=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
 const service=()=>{const r=document.querySelector('input[name="service"]:checked');return {name:r.value,price:+r.dataset.price}};
-const staff={boedo:[{id:"lautaro",name:"Lautaro",start:9,end:14},{id:"julieta",name:"Julieta",start:14,end:20},{id:"brai",name:"Brai",start:9,end:20}],matheu:[{id:"thiago",name:"Thiago",start:11,end:20}]};
+
 const money=n=>new Intl.NumberFormat("es-AR").format(n);
 function note(t,c){msg.textContent=t;msg.className="show "+c}
 function clear(){msg.textContent="";msg.className=""}
