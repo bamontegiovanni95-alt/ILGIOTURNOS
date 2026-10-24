@@ -55,6 +55,9 @@ exports.handler = async (event) => {
 
     return json(400, { error: "Acción inválida." });
   } catch (e) {
-    return json(500, { error: "Error del servidor." });
+    const detalle = `${e.name}: ${String(e.message)}`
+      .slice(0, 120)
+      .replace(/sb_[A-Za-z0-9_-]+|eyJ[A-Za-z0-9_.-]+/g, "***");
+    return json(500, { error: "Error del servidor (" + detalle + ")" });
   }
 };
