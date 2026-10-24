@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es-AR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Panel de turnos | Il Gio</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f6f4ee;color:#1e2823}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 60px}h1{font-size:22px;margin:8px 0 18px;color:#183d30}
+input,select,button{font:inherit;font-size:16px}input,select{width:100%;padding:12px;border:1px solid #dce1db;border-radius:8px;background:#fff}
+.btn{background:#183d30;color:#fff;border:0;border-radius:8px;padding:12px 16px;cursor:pointer}.btn.sec{background:#fff;color:#183d30;border:1px solid #183d30}
+.row{display:flex;gap:8px;margin-bottom:10px}.row>*{flex:1}.row .btn{flex:0 0 auto}
+.card{background:#fff;border:1px solid #e6e8e2;border-radius:10px;padding:14px;margin-top:10px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.hora{font-size:22px;font-weight:700;color:#183d30}
+.meta{font-size:13px;color:#6e7771;margin:4px 0}.cli{font-size:16px;margin:6px 0}.cli a{color:#183d30;font-weight:600}
+.cancel{background:#fff1ef;color:#a3372a;border:0;border-radius:8px;padding:10px 14px;cursor:pointer;margin-top:6px}
+.msg{padding:12px;border-radius:8px;margin-top:12px;font-size:14px}.err{background:#fff1ef;color:#a3372a}.vacio{background:#edf2eb;color:#3d5a47}
+.hide{display:none}.out{float:right;background:none;border:0;color:#6e7771;text-decoration:underline;cursor:pointer;font-size:13px}
+</style></head><body><div class="wrap">
+<div id="login"><h1>Panel de turnos · Il Gio</h1><input id="pass" type="password" placeholder="Contraseña" autocomplete="current-password"><div class="row" style="margin-top:10px"><button class="btn" id="entrar">Entrar</button></div><div id="loginMsg"></div></div>
+<div id="panel" class="hide"><button class="out" id="salir">Salir</button><h1>Turnos</h1>
+<div class="row"><button class="btn sec" id="ant">←</button><input id="fecha" type="date"><button class="btn sec" id="sig">→</button></div>
+<div class="row"><select id="local"><option value="">Todos los locales</option><option value="boedo">Boedo</option><option value="matheu">Parque Patricios</option></select>
+<select id="barbero"><option value="">Todos los barberos</option><option value="lautaro">Lautaro</option><option value="julieta">Julieta</option><option value="brai">Brai</option><option value="thiago">Thiago</option></select></div>
+<div id="lista"></div></div></div>
+<script>
+const $=id=>document.getElementById(id);
+const LOCAL={boedo:"Boedo",matheu:"Parque Patricios"};
+let pass=sessionStorage.getItem("ilgio_pass")||"",turnos=[];
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const hoy=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Argentina/Buenos_Aires"}).format(new Date());
+async function api(body){const r=await fetch("/.netlify/functions/admin",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:pass,...body})});const d=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(d.error||"Error"),{status:r.status});return d}
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+function pintar(){const L=$("lista");L.innerHTML="";const lo=$("local").value,ba=$("barbero").value;
+const v=turnos.filter(t=>(!lo||t.location===lo)&&(!ba||t.barber===ba));
+if(!v.length){L.appendChild(el("div","msg vacio","No hay turnos para este día."));return}
+v.forEach(t=>{const c=el("div","card"),top=el("div","top");top.appendChild(el("span","hora",t.time));top.appendChild(el("span","meta",cap(t.barber)+" · "+LOCAL[t.location]));c.appendChild(top);
+c.appendChild(el("div","meta",t.service+" · $"+new Intl.NumberFormat("es-AR").format(t.price)));
+const cli=el("div","cli",t.name+" · ");const a=el("a","",t.phone);a.href="tel:"+t.phone.replace(/[^\d+]/g,"");cli.appendChild(a);c.appendChild(cli);
+const b=el("button","cancel","Cancelar turno");b.onclick=async()=>{if(!confirm("¿Cancelar el turno de "+t.name+" a las "+t.time+"?"))return;try{await api({action:"cancel",id:t.id});cargar()}catch(e){alert(e.message)}};c.appendChild(b);L.appendChild(c)})}
+async function cargar(){$("lista").innerHTML="";$("lista").appendChild(el("div","msg vacio","Cargando…"));
+try{const d=await api({action:"list",date:$("fecha").value});turnos=d.turnos;pintar()}catch(e){if(e.status===401){salir();$("loginMsg").innerHTML="";$("loginMsg").appendChild(el("div","msg err",e.message))}else{$("lista").innerHTML="";$("lista").appendChild(el("div","msg err",e.message))}}}
+function mostrar(){$("login").classList.add("hide");$("panel").classList.remove("hide");if(!$("fecha").value)$("fecha").value=hoy();cargar()}
+function salir(){sessionStorage.removeItem("ilgio_pass");pass="";$("panel").classList.add("hide");$("login").classList.remove("hide")}
+function mover(n){const d=new Date($("fecha").value+"T12:00:00");d.setDate(d.getDate()+n);$("fecha").value=d.toISOString().slice(0,10);cargar()}
+$("entrar").onclick=async()=>{pass=$("pass").value;$("loginMsg").innerHTML="";try{await api({action:"list",date:hoy()});sessionStorage.setItem("ilgio_pass",pass);mostrar()}catch(e){$("loginMsg").appendChild(el("div","msg err",e.message))}};
+$("pass").onkeydown=e=>{if(e.key==="Enter")$("entrar").click()};
+$("salir").onclick=salir;$("fecha").onchange=cargar;$("ant").onclick=()=>mover(-1);$("sig").onclick=()=>mover(1);$("local").onchange=pintar;$("barbero").onchange=pintar;
+if(pass)mostrar();
+</script></body></html>
