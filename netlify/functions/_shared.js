@@ -10,12 +10,26 @@ const json = (statusCode, body) => ({
   body: JSON.stringify(body)
 });
 
+// Limpia espacios, saltos de línea o texto de más pegado en las variables
+const limpiar = (valor, patron) => {
+  const s = String(valor || "");
+  const m = s.match(patron);
+  return (m ? m[0] : s).trim();
+};
+const sbUrl = () =>
+  limpiar(process.env.SUPABASE_URL, /https:\/\/[a-z0-9-]+\.supabase\.co/i);
+const sbKey = () =>
+  limpiar(
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    /sb_secret_[A-Za-z0-9_-]+|eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/
+  );
+
 const sb = (path, options = {}) =>
-  fetch(`${process.env.SUPABASE_URL}/rest/v1/${path}`, {
+  fetch(`${sbUrl()}/rest/v1/${path}`, {
     ...options,
     headers: {
-      apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
-      Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+      apikey: sbKey(),
+      Authorization: `Bearer ${sbKey()}`,
       "Content-Type": "application/json",
       ...(options.headers || {})
     }
