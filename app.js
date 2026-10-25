@@ -3,7 +3,6 @@ const staff={boedo:[{id:"lautaro",name:"Lautaro",start:9,end:14},{id:"julieta",n
 const loc=$("location"),barber=$("barber"),date=$("date"),slots=$("slots"),time=$("selectedTime"),msg=$("message");let chosen="";
 const now=new Date();date.min=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
 const service=()=>{const r=document.querySelector('input[name="service"]:checked');return {name:r.value,price:+r.dataset.price}};
-
 const money=n=>new Intl.NumberFormat("es-AR").format(n);
 function note(t,c){msg.textContent=t;msg.className="show "+c}
 function clear(){msg.textContent="";msg.className=""}
@@ -21,5 +20,6 @@ loc.onchange=setBarbers;barber.onchange=getSlots;date.onchange=getSlots;document
 $("bookingForm").onsubmit=async e=>{e.preventDefault();clear();if(!chosen){note("Elegí un horario disponible antes de confirmar.","error");return}
 const s=service(),body={location:loc.value,barber:barber.value,date:date.value,time:chosen,service:s.name,price:s.price,duration:30,name:$("name").value.trim(),phone:$("phone").value.trim()};
 $("submit").disabled=true;$("submit").textContent="Registrando…";
-try{const r=await fetch("/.netlify/functions/bookings",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}),data=await r.json();if(!r.ok)throw Error(data.error||"No se pudo registrar el turno.");const person=staff[body.location].find(x=>x.id===body.barber);note(`¡Turno confirmado! ${body.date} a las ${body.time} con ${person.name}. ${s.name} · $${money(s.price)}.`,"success");await getSlots()}catch(err){note(err.message,"error");await getSlots()}finally{$("submit").disabled=false;$("submit").textContent="Confirmar reserva →"}};
+try{const r=await fetch("/.netlify/functions/bookings",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}),data=await r.json();if(!r.ok)throw Error(data.error||"No se pudo registrar el turno.");const person=staff[body.location].find(x=>x.id===body.barber);await getSlots();note(`¡Solicitud enviada! ${body.date} a las ${body.time} con ${person.name}. ${s.name} · $${money(s.price)}. El local va a confirmar tu turno y te avisa por WhatsApp.`,"success")}catch(err){await getSlots();note(err.message,"error")}finally{$("submit").disabled=false;$("submit").textContent="Solicitar turno →"}};
 summary();
+$("submit").textContent="Solicitar turno →";document.querySelector(".fine").textContent="El local confirma cada turno. Te avisamos por WhatsApp cuando esté confirmado.";
