@@ -8,8 +8,9 @@ exports.handler = async (event) => {
 
     const from = `${date}T00:00:00-03:00`;
     const to = `${date}T23:59:59-03:00`;
+    // Los turnos pendientes también ocupan el horario
     const r = await sb(
-      `appointments?select=start_at&location=eq.${location}&barber=eq.${barber}&status=eq.confirmed&start_at=gte.${encodeURIComponent(from)}&start_at=lte.${encodeURIComponent(to)}`
+      `appointments?select=start_at&location=eq.${location}&barber=eq.${barber}&status=in.(pending,confirmed)&start_at=gte.${encodeURIComponent(from)}&start_at=lte.${encodeURIComponent(to)}`
     );
     if (!r.ok) return json(500, { error: "Error de base de datos." });
 
