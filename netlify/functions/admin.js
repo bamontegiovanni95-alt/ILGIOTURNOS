@@ -4,6 +4,9 @@ const { json, sb } = require("./_shared");
 const hash = (s) => crypto.createHash("sha256").update(String(s)).digest();
 const igual = (a, b) => crypto.timingSafeEqual(hash(a), hash(b));
 
+// Cambios de estado permitidos: nuevo estado -> estado desde el que se puede llegar
+const DESDE = { confirmed: "pending", rejected: "pending", cancelled: "confirmed" };
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") return json(405, { error: "Método no permitido." });
   try {
@@ -21,7 +24,7 @@ exports.handler = async (event) => {
       const from = encodeURIComponent(`${b.date}T00:00:00-03:00`);
       const to = encodeURIComponent(`${b.date}T23:59:59-03:00`);
       const r = await sb(
-        `appointments?select=id,location,barber,start_at,service,price,customer_name,customer_phone&status=eq.confirmed&start_at=gte.${from}&start_at=lte.${to}&order=start_at.asc`
+        `appointments?select=id,location,barber,start_at,service,price,customer_name,customer_phone,status&status=in.(pending,confirmed)&start_at=gte.${from}&start_at=lte.${to}&order=start_at.asc`
       );
       if (!r.ok) return json(500, { error: "Error de base de datos." });
       const rows = await r.json();
@@ -35,21 +38,24 @@ exports.handler = async (event) => {
           service: x.service,
           price: x.price,
           name: x.customer_name,
-          phone: x.customer_phone
+          phone: x.customer_phone,
+          status: x.status
         };
       });
       return json(200, { turnos });
     }
 
-    if (b.action === "cancel") {
+    if (b.action === "set") {
       const id = Number(b.id);
-      if (!Number.isInteger(id) || id < 1) return json(400, { error: "Turno inválido." });
-      const r = await sb(`appointments?id=eq.${id}`, {
+      if (!Number.isInteger(id) || id < 1 || !DESDE[b.to]) return json(400, { error: "Datos inválidos." });
+      const r = await sb(`appointments?id=eq.${id}&status=eq.${DESDE[b.to]}`, {
         method: "PATCH",
-        headers: { Prefer: "return=minimal" },
-        body: JSON.stringify({ status: "cancelled" })
+        headers: { Prefer: "return=representation" },
+        body: JSON.stringify({ status: b.to })
       });
-      if (!r.ok) return json(500, { error: "No se pudo cancelar." });
+      if (!r.ok) return json(500, { error: "No se pudo actualizar el turno." });
+      const filas = await r.json();
+      if (!filas.length) return json(409, { error: "Ese turno ya cambió de estado. Se actualiza la lista." });
       return json(200, { ok: true });
     }
 
