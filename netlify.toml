@@ -4,3 +4,34 @@
 
 [functions]
   node_bundler = "esbuild"
+
+# Íconos y datos de instalación de la app
+[[redirects]]
+  from = "/icon-180.png"
+  to = "/.netlify/functions/pwa?r=icon&size=180"
+  status = 200
+
+[[redirects]]
+  from = "/icon-192.png"
+  to = "/.netlify/functions/pwa?r=icon&size=192"
+  status = 200
+
+[[redirects]]
+  from = "/icon-512.png"
+  to = "/.netlify/functions/pwa?r=icon&size=512"
+  status = 200
+
+[[redirects]]
+  from = "/manifest-cliente.webmanifest"
+  to = "/.netlify/functions/pwa?r=manifest&app=cliente"
+  status = 200
+
+[[redirects]]
+  from = "/manifest-admin.webmanifest"
+  to = "/.netlify/functions/pwa?r=manifest&app=admin"
+  status = 200
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
