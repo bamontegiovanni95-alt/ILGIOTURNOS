@@ -1,9 +1,56 @@
 <!doctype html>
-<html lang="es-AR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#183d30"><title>Turnos | Il Gio Coffee & Barbería</title><link rel="stylesheet" href="/styles.css"></head>
+<html lang="es-AR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#183d30"><title>Turnos | Il Gio Coffee & Barbería</title>
+<link rel="manifest" href="/manifest-cliente.webmanifest"><link rel="apple-touch-icon" href="/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Il Gio">
+<link rel="stylesheet" href="/styles.css">
+<style>
+[hidden]{display:none!important}
+.appbar{max-width:760px;margin:0 auto 18px;padding:0 22px}
+.appbar .box{background:#e9ede5;border:1px solid #dce1db;border-radius:12px;padding:14px 16px;font-size:13px;line-height:1.6;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.cuenta{max-width:760px;margin:0 auto 22px;background:#fff;padding:clamp(22px,5vw,40px);border:1px solid #e6e8e2;border-radius:14px;box-shadow:0 20px 60px #253b2d0a}
+.cuenta h2{margin:9px 0 18px}
+.tabs{display:flex;gap:8px;margin-bottom:4px}
+.tabs button{flex:1;border:1px solid var(--g);background:#fff;color:var(--g);border-radius:7px;padding:12px;font:600 13px 'DM Sans',sans-serif;cursor:pointer}
+.tabs button.on{background:var(--g);color:#fff}
+.cuenta label{display:block;font-size:13px;font-weight:700;margin:18px 0 8px}
+.cuenta input{width:100%;border:1px solid var(--line);border-radius:7px;padding:13px 14px;font:14px 'DM Sans',sans-serif;background:#fff;color:var(--ink)}
+.link{background:none;border:0;color:var(--g);text-decoration:underline;font:600 13px 'DM Sans',sans-serif;cursor:pointer;padding:6px 0}
+.msgbox{display:none;padding:13px;border-radius:7px;font-size:13px;line-height:1.5;margin-top:12px}
+.msgbox.show{display:block}.msgbox.error{background:#fff1ef;color:#a3372a}.msgbox.success{background:#edf7ee;color:#205d35}
+.fila{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:14px 0 6px}
+.turno{border:1px solid var(--line);border-radius:9px;padding:14px;margin-top:10px;font-size:13px;line-height:1.7}
+.turno b{display:block;font-size:15px;color:var(--g)}
+.est{display:inline-block;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;margin:2px 0 4px}
+.est.p{background:#fdeeb8;color:#7a5a00}.est.c{background:#dcf1e1;color:#205d35}
+.cancelar{background:#fff1ef;color:#a3372a;border:0;border-radius:7px;padding:9px 13px;font:600 13px 'DM Sans',sans-serif;cursor:pointer;margin-top:6px}
+.needlogin{background:#fff8e6;border:1px solid #ecd9a0;color:#6b5200;border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:6px}
+.needlogin a{color:#6b5200;font-weight:700}
+button:disabled{opacity:.55;cursor:not-allowed}
+</style></head>
 <body>
-<header><a class="brand" href="#"><span class="mark">IG</span><span><b>IL GIO</b><small>COFFEE & BARBERÍA</small></span></a><a href="#reservar">Reservar turno ↗</a></header>
-<main><section class="hero"><div class="eyebrow">DOS LOCALES · UNA EXPERIENCIA</div><h1>Tu próximo corte,<br><em>a tu manera.</em></h1><p>Elegí tu local, tu barbero y el horario que mejor te quede. Reservá online en pocos pasos.</p><a class="btn" href="#reservar">Reservar mi turno →</a><div class="note">✦ Atención personalizada · Turnos de 30 minutos</div></section>
+<header><a class="brand" href="#"><span class="mark">IG</span><span><b>IL GIO</b><small>COFFEE & BARBERÍA</small></span></a><a href="#cuenta" id="navCuenta">Ingresar ↗</a></header>
+<main><section class="hero"><div class="eyebrow">DOS LOCALES · UNA EXPERIENCIA</div><h1>Tu próximo corte,<br><em>a tu manera.</em></h1><p>Creá tu cuenta, elegí tu local, tu barbero y el horario que mejor te quede. Te avisamos al celular cuando tu turno esté confirmado.</p><a class="btn" href="#reservar">Reservar mi turno →</a><div class="note">✦ Atención personalizada · Turnos de 30 minutos</div></section>
+
+<div class="appbar" id="appbar" hidden><div class="box"><span id="appmsg">Instalá la app en tu celular para reservar más rápido y recibir avisos.</span><button class="btn" id="btnInstalar" type="button" hidden>Instalar app</button></div></div>
+
+<section class="cuenta" id="cuenta"><div class="eyebrow">TU CUENTA</div>
+<div id="vistaAuth"><h2>Ingresá o creá tu cuenta</h2>
+<div class="tabs"><button type="button" id="tabIngreso" class="on">Ingresar</button><button type="button" id="tabRegistro">Crear cuenta</button></div>
+<form id="authForm" novalidate>
+<div id="campoNombre" hidden><label for="cName">Tu nombre</label><input id="cName" maxlength="60" autocomplete="name" placeholder="Nombre y apellido"></div>
+<label for="cPhone">WhatsApp</label><input id="cPhone" type="tel" maxlength="30" autocomplete="tel" placeholder="Ej: 11 2233 4455">
+<label for="cPass">Contraseña</label><input id="cPass" type="password" maxlength="100" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+<button class="btn submit" id="cSubmit" type="submit" style="margin-top:20px">Ingresar →</button>
+<p class="fine" id="olvide">¿Olvidaste tu contraseña? Pedile al local que te la restablezca.</p>
+<div id="cMsg" class="msgbox" role="status"></div></form></div>
+<div id="vistaYo" hidden><h2 id="yoSaludo">Hola</h2><div class="fine" style="text-align:left" id="yoTel"></div>
+<div class="fila"><button class="btn" id="btnAvisos" type="button">🔔 Activar avisos</button><button class="link" id="btnSalir" type="button">Salir de mi cuenta</button></div>
+<div class="fine" style="text-align:left" id="avisoEstado"></div>
+<h3 style="margin:24px 0 2px;font-size:17px">Mis turnos</h3><div id="misTurnos"></div></div>
+</section>
+
 <section class="booking" id="reservar"><div class="eyebrow">RESERVAS ONLINE</div><h2>Encontrá tu horario</h2>
+<div class="needlogin" id="needLogin">Para reservar necesitás una cuenta. Es rápido: <a href="#cuenta">ingresá o creá tu cuenta acá</a>.</div>
 <form id="bookingForm">
 <label for="location">1. Elegí el local</label><select id="location" required><option value="">Seleccionar sucursal</option><option value="boedo">Boedo · Av. Independencia 3579</option><option value="matheu">Parque Patricios · Matheu 1732</option></select>
 <label>2. Servicio</label><div class="services"><label class="service"><input type="radio" name="service" value="Corte" data-price="18000" checked><b>Corte</b><strong>$18.000</strong><small>30 minutos</small></label><label class="service"><input type="radio" name="service" value="Corte y barba" data-price="22000"><b>Corte y barba</b><strong>$22.000</strong><small>30 minutos</small></label><label class="service"><input type="radio" name="service" value="Barba" data-price="14000"><b>Barba</b><strong>$14.000</strong><small>30 minutos</small></label></div>
@@ -11,9 +58,8 @@
 <label for="date">4. Día</label><input id="date" type="date" required>
 <div class="labelrow"><label>5. Horarios disponibles</label><span id="hint">Elegí local, barbero y día</span></div><div id="slots" class="slots"><div class="empty">Los horarios aparecerán acá.</div></div>
 <input type="hidden" id="selectedTime">
-<label for="name">Tu nombre</label><input id="name" maxlength="80" autocomplete="name" placeholder="Nombre y apellido" required>
-<label for="phone">WhatsApp</label><input id="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="Tu número de contacto" required>
-<div class="summary"><span>Servicio seleccionado</span><b id="summary">Corte · $18.000 · 30 min</b></div><button class="btn submit" id="submit" type="submit">Confirmar reserva →</button><p class="fine">La reserva se confirma cuando el sistema la registra correctamente.</p><div id="message" role="status"></div>
+<div class="summary"><span>Servicio seleccionado</span><b id="summary">Corte · $18.000 · 30 min</b></div><button class="btn submit" id="submit" type="submit" disabled>Solicitar turno →</button><p class="fine">El local confirma cada turno. Te avisamos al celular cuando esté confirmado.</p><div id="message" role="status"></div>
 </form></section>
-<section class="locations"><div class="eyebrow">TE ESPERAMOS</div><h2>Elegí tu Il Gio</h2><div class="cards"><article><small>01 / BOEDO</small><h3>Independencia</h3><p>Av. Independencia 3579<br>Boedo, CABA</p><div class="team">Lautaro <span>09:00–14:00</span></div><div class="team">Julieta <span>14:00–20:00</span></div><div class="team">Brai <span>09:00–20:00</span></div></article><article><small>02 / PARQUE PATRICIOS</small><h3>Matheu</h3><p>Matheu 1732<br>Parque Patricios, CABA</p><div class="team">Thiago <span>11:00–20:00</span></div></article></div></section></main>
+
+<section class="locations"><div class="eyebrow">TE ESPERAMOS</div><h2>Elegí tu Il Gio</h2><div class="cards"><article><small>01 / BOEDO</small><h3>Independencia</h3><p>Av. Independencia 3579<br>Boedo, CABA</p><div class="team">Lautaro <span>09:00–14:00</span></div><div class="team">Julieta <span>14:00–20:00</span></div></article><article><small>02 / PARQUE PATRICIOS</small><h3>Matheu</h3><p>Matheu 1732<br>Parque Patricios, CABA</p><div class="team">Thiago <span>11:00–20:00</span></div></article></div></section></main>
 <footer><a class="brand" href="#"><span class="mark">IG</span><span><b>IL GIO</b><small>COFFEE & BARBERÍA</small></span></a><span>Estilo, café y buena atención.</span></footer><script src="/app.js"></script></body></html>
