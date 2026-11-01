@@ -1,59 +1,129 @@
 <!doctype html>
-<html lang="es-AR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Panel de turnos | Il Gio</title>
+<html lang="es-AR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#183d30"><title>Panel | Il Gio</title>
+<link rel="manifest" href="/manifest-admin.webmanifest"><link rel="apple-touch-icon" href="/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Il Gio Panel">
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f6f4ee;color:#1e2823}
-.wrap{max-width:640px;margin:0 auto;padding:20px 16px 60px}h1{font-size:22px;margin:8px 0 18px;color:#183d30}
-input,select,button{font:inherit;font-size:16px}input,select{width:100%;padding:12px;border:1px solid #dce1db;border-radius:8px;background:#fff}
+*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f6f4ee;color:#1e2823}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 60px}h1{font-size:22px;margin:8px 0 14px;color:#183d30}
+input,select,button{font:inherit;font-size:16px}input,select{width:100%;padding:12px;border:1px solid #dce1db;border-radius:8px;background:#fff;margin-bottom:10px}
 .btn{background:#183d30;color:#fff;border:0;border-radius:8px;padding:12px 16px;cursor:pointer}.btn.sec{background:#fff;color:#183d30;border:1px solid #183d30}
-.row{display:flex;gap:8px;margin-bottom:10px}.row>*{flex:1}.row .btn{flex:0 0 auto}
+.row{display:flex;gap:8px;margin-bottom:10px}.row>*{flex:1;margin-bottom:0}.row .btn{flex:0 0 auto}
 .card{background:#fff;border:1px solid #e6e8e2;border-radius:10px;padding:14px;margin-top:10px}.card.pen{border-color:#e0b84a;background:#fffbee}
 .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.hora{font-size:22px;font-weight:700;color:#183d30}
-.meta{font-size:13px;color:#6e7771;margin:4px 0}.cli{font-size:16px;margin:6px 0}.cli a{color:#183d30;font-weight:600}
+.meta{font-size:13px;color:#6e7771;margin:4px 0}.sub{font-size:13px;color:#6e7771;margin:2px 0}.cli{font-size:16px;margin:6px 0}.cli a{color:#183d30;font-weight:600}
 .badge{display:inline-block;font-size:12px;font-weight:700;border-radius:20px;padding:3px 10px;margin:2px 0 4px}.badge.pen{background:#fdeeb8;color:#7a5a00}.badge.ok{background:#dcf1e1;color:#205d35}
 .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.acts button,.acts a{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-size:15px;text-decoration:none;display:inline-block}
-.a-ok{background:#183d30;color:#fff}.a-no{background:#fff1ef;color:#a3372a}.a-wa{background:#e3f6ea;color:#1b6b3a}
+.a-ok{background:#183d30;color:#fff}.a-no{background:#fff1ef;color:#a3372a}.a-wa{background:#e3f6ea;color:#1b6b3a}.a-gr{background:#eef0ec;color:#3d4a41}
 .msg{padding:12px;border-radius:8px;margin-top:12px;font-size:14px}.err{background:#fff1ef;color:#a3372a}.vacio{background:#edf2eb;color:#3d5a47}
-.hide{display:none}.out{float:right;background:none;border:0;color:#6e7771;text-decoration:underline;cursor:pointer;font-size:13px}
+.app{background:#e9ede5;border:1px solid #dce1db;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:12px}.app .acts{margin-top:6px}
+.out{float:right;background:none;border:0;color:#6e7771;text-decoration:underline;cursor:pointer;font-size:13px}
 </style></head><body><div class="wrap">
-<div id="login"><h1>Panel de turnos · Il Gio</h1><input id="pass" type="password" placeholder="Contraseña" autocomplete="current-password"><div class="row" style="margin-top:10px"><button class="btn" id="entrar">Entrar</button></div><div id="loginMsg"></div></div>
-<div id="panel" class="hide"><button class="out" id="salir">Salir</button><h1>Turnos</h1>
+<div id="login"><h1>Panel de turnos · Il Gio</h1>
+<select id="who"><option value="">¿Quién sos?</option><option value="dueno">Dueño</option><option value="lautaro">Lautaro</option><option value="julieta">Julieta</option><option value="thiago">Thiago</option></select>
+<input id="pass" type="password" placeholder="Contraseña" autocomplete="current-password">
+<div class="row"><button class="btn" id="entrar">Entrar</button></div><div id="loginMsg"></div></div>
+
+<div id="panel" hidden><button class="out" id="salir">Salir</button><h1 id="titulo">Il Gio</h1>
+<div class="app" id="appBox"><span id="appTexto"></span><div class="acts"><button class="a-ok" id="btnInstalar" type="button" hidden>Instalar app</button><button class="a-ok" id="btnAvisos" type="button" hidden>🔔 Activar avisos de turnos</button></div></div>
+<div class="row"><button class="btn" id="tabT">Turnos</button><button class="btn sec" id="tabC">Clientes</button></div>
+<div id="vistaT">
 <div class="row"><button class="btn sec" id="ant">←</button><input id="fecha" type="date"><button class="btn sec" id="sig">→</button></div>
 <div class="row"><select id="local"><option value="">Todos los locales</option><option value="boedo">Boedo</option><option value="matheu">Parque Patricios</option></select>
-<select id="barbero"><option value="">Todos los barberos</option><option value="lautaro">Lautaro</option><option value="julieta">Julieta</option><option value="brai">Brai</option><option value="thiago">Thiago</option></select></div>
-<div id="lista"></div></div></div>
+<select id="barbero"><option value="">Todos los barberos</option><option value="lautaro">Lautaro</option><option value="julieta">Julieta</option><option value="thiago">Thiago</option></select></div>
+<div id="lista"></div></div>
+<div id="vistaC" hidden><input id="buscar" placeholder="Buscar por nombre o teléfono"><div id="resumenC" class="meta"></div><div id="listaC"></div></div>
+</div></div>
 <script>
 const $=id=>document.getElementById(id);
 const LOCAL={boedo:"Boedo",matheu:"Parque Patricios"};
-let pass=sessionStorage.getItem("ilgio_pass")||"",turnos=[];
+const NOMBRES={dueno:"Dueño",lautaro:"Lautaro",julieta:"Julieta",thiago:"Thiago"};
+const TZ="America/Argentina/Buenos_Aires";
+let sesion=null,turnos=[],clientes=[],instalador=null;
+try{sesion=JSON.parse(localStorage.getItem("ilgio_staff")||"null")}catch(e){}
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
-const hoy=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Argentina/Buenos_Aires"}).format(new Date());
+const hoy=()=>new Intl.DateTimeFormat("en-CA",{timeZone:TZ}).format(new Date());
+const fDia=iso=>new Intl.DateTimeFormat("es-AR",{day:"2-digit",month:"2-digit",year:"numeric",timeZone:TZ}).format(new Date(iso));
+const fHora=iso=>new Intl.DateTimeFormat("es-AR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23",timeZone:TZ}).format(new Date(iso));
 function waNum(p){let d=String(p).replace(/\D/g,"");if(d.startsWith("00"))d=d.slice(2);if(d.startsWith("549"))return d;if(d.startsWith("54"))return"549"+d.slice(2);d=d.replace(/^0+/,"");
 if(d.length===12&&d.startsWith("11")&&d.slice(2,4)==="15")d="11"+d.slice(4);else if(d.length===12&&d.slice(3,5)==="15")d=d.slice(0,3)+d.slice(5);return"549"+d}
-async function api(body){const r=await fetch("/.netlify/functions/admin",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:pass,...body})});const d=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(d.error||"Error"),{status:r.status});return d}
 function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
-async function cambiar(t,to,pregunta){if(!confirm(pregunta))return;try{await api({action:"set",id:t.id,to});}catch(e){alert(e.message)}cargar()}
-function pintar(){const L=$("lista");L.innerHTML="";const lo=$("local").value,ba=$("barbero").value;
-const v=turnos.filter(t=>(!lo||t.location===lo)&&(!ba||t.barber===ba));
-if(!v.length){L.appendChild(el("div","msg vacio","No hay turnos para este día."));return}
-const [yy,mm,dd]=$("fecha").value.split("-");
-v.forEach(t=>{const pen=t.status==="pending";const c=el("div","card"+(pen?" pen":"")),top=el("div","top");top.appendChild(el("span","hora",t.time));top.appendChild(el("span","meta",cap(t.barber)+" · "+LOCAL[t.location]));c.appendChild(top);
-c.appendChild(el("span","badge "+(pen?"pen":"ok"),pen?"Pendiente de confirmar":"Confirmado"));
-c.appendChild(el("div","meta",t.service+" · $"+new Intl.NumberFormat("es-AR").format(t.price)));
-const cli=el("div","cli",t.name+" · ");const a=el("a","",t.phone);a.href="tel:"+t.phone.replace(/[^\d+]/g,"");cli.appendChild(a);c.appendChild(cli);
-const acts=el("div","acts");
-if(pen){const ok=el("button","a-ok","Confirmar");ok.onclick=()=>cambiar(t,"confirmed","¿Confirmar el turno de "+t.name+" a las "+t.time+"?");acts.appendChild(ok);
-const no=el("button","a-no","Rechazar");no.onclick=()=>cambiar(t,"rejected","¿Rechazar el turno de "+t.name+" a las "+t.time+"?");acts.appendChild(no)}
-else{const no=el("button","a-no","Cancelar turno");no.onclick=()=>cambiar(t,"cancelled","¿Cancelar el turno de "+t.name+" a las "+t.time+"?");acts.appendChild(no)}
-const txt="Hola "+t.name+"! Te escribimos de Il Gio por tu turno de "+t.service+" el "+dd+"/"+mm+" a las "+t.time+(pen?".":". Está CONFIRMADO ✅");
-const w=el("a","a-wa","WhatsApp");w.href="https://wa.me/"+waNum(t.phone)+"?text="+encodeURIComponent(txt);w.target="_blank";w.rel="noopener";acts.appendChild(w);
-c.appendChild(acts);L.appendChild(c)})}
-async function cargar(){$("lista").innerHTML="";$("lista").appendChild(el("div","msg vacio","Cargando…"));
-try{const d=await api({action:"list",date:$("fecha").value});turnos=d.turnos;pintar()}catch(e){if(e.status===401){salir();$("loginMsg").innerHTML="";$("loginMsg").appendChild(el("div","msg err",e.message))}else{$("lista").innerHTML="";$("lista").appendChild(el("div","msg err",e.message))}}}
-function mostrar(){$("login").classList.add("hide");$("panel").classList.remove("hide");if(!$("fecha").value)$("fecha").value=hoy();cargar()}
-function salir(){sessionStorage.removeItem("ilgio_pass");pass="";$("panel").classList.add("hide");$("login").classList.remove("hide")}
-function mover(n){const d=new Date($("fecha").value+"T12:00:00");d.setDate(d.getDate()+n);$("fecha").value=d.toISOString().slice(0,10);cargar()}
-$("entrar").onclick=async()=>{pass=$("pass").value;$("loginMsg").innerHTML="";try{await api({action:"list",date:hoy()});sessionStorage.setItem("ilgio_pass",pass);mostrar()}catch(e){$("loginMsg").appendChild(el("div","msg err",e.message))}};
+async function post(url,body,token){const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json",...(token?{Authorization:"Bearer "+token}:{})},body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(d.error||"Error"),{status:r.status});return d}
+const api=(accion,datos={})=>post("/.netlify/functions/admin",{accion,...datos},sesion&&sesion.token);
+
+// ---------- Entrar y salir ----------
+function mostrar(){$("login").hidden=true;$("panel").hidden=false;$("titulo").textContent="Il Gio · "+NOMBRES[sesion.who];
+ if(!$("fecha").value)$("fecha").value=hoy();if(sesion.who!=="dueno"&&!$("barbero").value)$("barbero").value=sesion.who;
+ pintarApp();cargar();renovarAvisos()}
+function salir(){sesion=null;try{localStorage.removeItem("ilgio_staff")}catch(e){}$("panel").hidden=true;$("login").hidden=false}
+$("entrar").onclick=async()=>{$("loginMsg").innerHTML="";
+ if(!$("who").value){$("loginMsg").appendChild(el("div","msg err","Elegí quién sos."));return}
+ try{const d=await api("login",{who:$("who").value,password:$("pass").value});sesion={token:d.token,who:d.who};$("pass").value="";
+  try{localStorage.setItem("ilgio_staff",JSON.stringify(sesion))}catch(e){}mostrar()}catch(e){$("loginMsg").appendChild(el("div","msg err",e.message))}};
 $("pass").onkeydown=e=>{if(e.key==="Enter")$("entrar").click()};
-$("salir").onclick=salir;$("fecha").onchange=cargar;$("ant").onclick=()=>mover(-1);$("sig").onclick=()=>mover(1);$("local").onchange=pintar;$("barbero").onchange=pintar;
-if(pass)mostrar();
+$("salir").onclick=salir;
+function vencida(e){if(e.status===401){salir();$("loginMsg").innerHTML="";$("loginMsg").appendChild(el("div","msg err",e.message));return true}return false}
+
+// ---------- Turnos ----------
+async function cambiar(t,to,pregunta){if(!confirm(pregunta))return;try{await api("set",{id:t.id,to})}catch(e){if(vencida(e))return;alert(e.message)}cargar()}
+function pintar(){const L=$("lista");L.innerHTML="";const lo=$("local").value,ba=$("barbero").value;
+ const v=turnos.filter(t=>(!lo||t.location===lo)&&(!ba||t.barber===ba));
+ if(!v.length){L.appendChild(el("div","msg vacio","No hay turnos para este día."));return}
+ const [yy,mm,dd]=$("fecha").value.split("-");
+ v.forEach(t=>{const pen=t.status==="pending";const c=el("div","card"+(pen?" pen":"")),top=el("div","top");top.appendChild(el("span","hora",t.time));top.appendChild(el("span","meta",cap(t.barber)+" · "+LOCAL[t.location]));c.appendChild(top);
+ c.appendChild(el("span","badge "+(pen?"pen":"ok"),pen?"Pendiente de confirmar":"Confirmado"));
+ c.appendChild(el("div","meta",t.service+" · $"+new Intl.NumberFormat("es-AR").format(t.price)));
+ const cli=el("div","cli",t.name+" · ");const a=el("a","",t.phone);a.href="tel:"+t.phone.replace(/[^\d+]/g,"");cli.appendChild(a);c.appendChild(cli);
+ const acts=el("div","acts");
+ if(pen){const ok=el("button","a-ok","Confirmar");ok.onclick=()=>cambiar(t,"confirmed","¿Confirmar el turno de "+t.name+" a las "+t.time+"?");acts.appendChild(ok);
+  const no=el("button","a-no","Rechazar");no.onclick=()=>cambiar(t,"rejected","¿Rechazar el turno de "+t.name+" a las "+t.time+"?");acts.appendChild(no)}
+ else{const no=el("button","a-no","Cancelar turno");no.onclick=()=>cambiar(t,"cancelled","¿Cancelar el turno de "+t.name+" a las "+t.time+"?");acts.appendChild(no)}
+ const txt="Hola "+t.name+"! Te escribimos de Il Gio por tu turno de "+t.service+" el "+dd+"/"+mm+" a las "+t.time+(pen?".":". Está CONFIRMADO ✅");
+ const w=el("a","a-wa","WhatsApp");w.href="https://wa.me/"+waNum(t.phone)+"?text="+encodeURIComponent(txt);w.target="_blank";w.rel="noopener";acts.appendChild(w);
+ c.appendChild(acts);L.appendChild(c)})}
+async function cargar(){$("lista").innerHTML="";$("lista").appendChild(el("div","msg vacio","Cargando…"));
+ try{const d=await api("list",{date:$("fecha").value});turnos=d.turnos;pintar()}catch(e){if(vencida(e))return;$("lista").innerHTML="";$("lista").appendChild(el("div","msg err",e.message))}}
+function mover(n){const d=new Date($("fecha").value+"T12:00:00");d.setDate(d.getDate()+n);$("fecha").value=d.toISOString().slice(0,10);cargar()}
+
+// ---------- Clientes ----------
+function vista(v){const c=v==="C";$("vistaT").hidden=c;$("vistaC").hidden=!c;$("tabT").className="btn"+(c?" sec":"");$("tabC").className="btn"+(c?"":" sec");if(c)cargarClientes();else cargar()}
+async function cargarClientes(){const L=$("listaC");L.innerHTML="";L.appendChild(el("div","msg vacio","Cargando…"));
+ try{const d=await api("clients");clientes=d.clientes;pintarClientes()}catch(e){if(vencida(e))return;L.innerHTML="";L.appendChild(el("div","msg err",e.message))}}
+function pintarClientes(){const L=$("listaC");L.innerHTML="";const q=$("buscar").value.trim().toLowerCase(),qd=q.replace(/\D/g,"");
+ const v=clientes.filter(c=>!q||c.name.toLowerCase().includes(q)||(qd&&c.phone.replace(/\D/g,"").includes(qd)));
+ $("resumenC").textContent=v.length+(v.length===1?" cliente":" clientes");
+ if(!v.length){L.appendChild(el("div","msg vacio","Todavía no hay clientes que coincidan."));return}
+ v.forEach(c=>{const card=el("div","card");card.appendChild(el("div","hora",c.name));
+ const cli=el("div","cli","");const a=el("a","",c.phone);a.href="tel:"+c.phone.replace(/[^\d+]/g,"");cli.appendChild(a);card.appendChild(cli);
+ card.appendChild(el("div","sub",c.visitas+(c.visitas===1?" visita":" visitas")+" · "+c.total+(c.total===1?" turno pedido":" turnos pedidos")+(c.cid?" · con cuenta en la app":"")));
+ if(c.ultima)card.appendChild(el("div","sub","Última visita: "+fDia(c.ultima)));
+ if(c.proximo)card.appendChild(el("div","sub","Próximo turno: "+fHora(c.proximo)));
+ const acts=el("div","acts");const w=el("a","a-wa","WhatsApp");w.href="https://wa.me/"+waNum(c.phone)+"?text="+encodeURIComponent("Hola "+c.name+"! Te escribimos de Il Gio.");w.target="_blank";w.rel="noopener";acts.appendChild(w);
+ if(c.cid){const r=el("button","a-gr","Restablecer contraseña");r.onclick=async()=>{const p=prompt("Nueva contraseña para "+c.name+" (mínimo 6 caracteres):");if(!p)return;try{await api("reset",{cid:c.cid,password:p});alert("Listo. Avisale a "+c.name+" su nueva contraseña por WhatsApp.")}catch(e){if(!vencida(e))alert(e.message)}};acts.appendChild(r)}
+ card.appendChild(acts);L.appendChild(card)})}
+
+// ---------- Instalar y avisos ----------
+const esIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const instalada=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
+const puedePush="serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
+const aBytes=b=>{const s=atob((b+"=".repeat((4-b.length%4)%4)).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(s,c=>c.charCodeAt(0))};
+const suscripcion=async()=>(await navigator.serviceWorker.ready).pushManager.getSubscription();
+async function pintarApp(){const t=$("appTexto"),b=$("btnAvisos");
+ if(!instalada){t.textContent=esIOS?"Instalá la app: tocá Compartir (el cuadrado con la flecha) y elegí «Agregar a inicio». Después abrila desde el ícono para activar los avisos.":"Instalá la app en tu celular para recibir los turnos nuevos como notificación."}
+ if(!puedePush){b.hidden=true;if(instalada)t.textContent="Este navegador no permite avisos.";return}
+ if(Notification.permission==="denied"){b.hidden=true;t.textContent="Los avisos están bloqueados. Activalos desde los ajustes de notificaciones del celular.";return}
+ let activo=false;if(Notification.permission==="granted"){try{activo=!!(await suscripcion())}catch(e){}}
+ b.hidden=activo;if(activo)t.textContent="🔔 Avisos activados: te llega una notificación cada vez que se pide un turno.";else if(instalada||!esIOS)t.textContent="Activá los avisos para recibir cada turno nuevo como notificación."}
+async function activarAvisos(){const p=await Notification.requestPermission();if(p!=="granted")throw new Error("No se activaron los avisos.");
+ const reg=await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();
+ if(!sub){const {key}=await post("/.netlify/functions/cuenta",{accion:"vapid"});sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:aBytes(key)})}
+ await api("push",{sub:sub.toJSON()})}
+async function renovarAvisos(){if(!puedePush||Notification.permission!=="granted")return;try{const s=await suscripcion();if(s)await api("push",{sub:s.toJSON()})}catch(e){}}
+$("btnAvisos").onclick=async()=>{$("btnAvisos").disabled=true;try{await activarAvisos()}catch(e){if(!vencida(e))alert(e.message)}$("btnAvisos").disabled=false;pintarApp()};
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();instalador=e;$("btnInstalar").hidden=false});
+$("btnInstalar").onclick=async()=>{if(!instalador)return;instalador.prompt();await instalador.userChoice;instalador=null;$("btnInstalar").hidden=true};
+
+$("tabT").onclick=()=>vista("T");$("tabC").onclick=()=>vista("C");$("buscar").oninput=pintarClientes;
+$("fecha").onchange=cargar;$("ant").onclick=()=>mover(-1);$("sig").onclick=()=>mover(1);$("local").onchange=pintar;$("barbero").onchange=pintar;
+if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(()=>{});
+if(sesion&&sesion.token)mostrar();
 </script></body></html>
