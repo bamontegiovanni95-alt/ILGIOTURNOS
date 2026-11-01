@@ -1,4 +1,5 @@
 const { sb, tokenOk, esc, cap, LOCALES, fechaLarga, waLink, baseUrl } = require("./_shared");
+const { avisarCliente, avisoEstado } = require("./_push");
 
 const ESTADOS = { pending: "pendiente", confirmed: "confirmado", rejected: "rechazado", cancelled: "cancelado" };
 
@@ -70,11 +71,13 @@ exports.handler = async (event) => {
       });
       const filasU = u.ok ? await u.json() : [];
       if (!filasU.length) return yaRespondido();
+      // Aviso al celular del cliente (si tiene la app con avisos activados)
+      await avisarCliente(filasU[0].customer_id, avisoEstado(filasU[0], nuevo));
       const bien = nuevo === "confirmed";
       return page(
         200,
         "Listo",
-        `<h1>${bien ? "✅ Turno confirmado" : "❌ Turno rechazado"}</h1>${detalle(t)}<p>Avisale al cliente:</p>${botonWa(t, nuevo, base)}<p class="small"><a href="${esc(base)}/admin">Ver todos los turnos</a></p>`
+        `<h1>${bien ? "✅ Turno confirmado" : "❌ Turno rechazado"}</h1>${detalle(t)}<p>Si querés, avisale también por WhatsApp:</p>${botonWa(t, nuevo, base)}<p class="small"><a href="${esc(base)}/admin">Ver todos los turnos</a></p>`
       );
     }
 
